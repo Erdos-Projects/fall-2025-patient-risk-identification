@@ -32,7 +32,7 @@ Extensive feature engineering was performed, including:
 *   **Encounter-level features**: Length of stay (`LOS_days`), admission hour (`admit_hour`), day of week (`admit_dow`), weekend/night admissions (`is_weekend`, `is_night`), and calendar context (`admit_month`, `admit_quarter`, `admit_season`).
 *   **Readmission target**: A binary `READMIT_30D` flag indicating readmission within 30 days of discharge for inpatient encounters.
 *   **Prior encounter gap**: Time since the last discharge (`gap_since_prev_discharge_days`).
-*   **Rolling prior-year utilization**: Counts of total, ER, inpatient, and outpatient encounters in the past 365 days (`prior365_total_enc`, `prior365_ER`, `prior365_inpatient`, `prior365_outpatient`), along with mean LOS and total cost.
+*   **Rolling prior-year utilization**: Counts of total, ER, inpatient, and outpatient encounters in the past 365 days (`prior365_ER`, `prior365_inpatient`, `prior365_outpatient`), along with mean LOS and total cost.
 *   **Previous encounter class**: The type of the immediately preceding encounter (`prev_class`).
 *   **Module-specific features**: Counts, binary flags, and proportions of categories for observations, procedures, conditions, immunizations (e.g., flu vaccine within 1 year), and medications (number active at admission).
 
