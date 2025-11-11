@@ -61,11 +61,11 @@ Both models were evaluated using 5-fold `GroupKFold` cross-validation. Key metri
 
 | Metric                | Logistic Regression | Random Forest (Untuned) |
 |:----------------------|:--------------------|:------------------------|
-| **Average AUC**       | 0.876               | 0.897                   |
-| **Precision (Class 1)** | 0.450               | 0.457                   |
-| **Recall (Class 1)**    | 0.857               | 0.909                   |
-| **F1-score (Class 1)**  | 0.590               | 0.607                   |
-| **Accuracy**          | 0.809               | 0.812                   |
+| **Average AUC**       | 0.866               | 0.898                   |
+| **Precision (Class 1)** | 0.453               | 0.455                  |
+| **Recall (Class 1)**    | 0.822               | 0.936                   |
+| **F1-score (Class 1)**  | 0.584               | 0.612                   |
+| **Accuracy**          | 0.812               | 0.810                   |
 
 The Random Forest model generally performed better than Logistic Regression, exhibiting a higher AUC and significantly improved recall for identifying readmission cases.
 
@@ -75,24 +75,36 @@ After hyperparameter tuning, the best Random Forest model achieved the following
 
 *   **Best Hyperparameters**: `n_estimators=200`, `max_depth=None`, `min_samples_split=10`, `class_weight='balanced'`.
 *   **Performance on Test Set**:
-    *   **AUC Score**: `0.993`
-    *   **Precision (Class 1 - Readmission)**: `0.771`
-    *   **Recall (Class 1 - Readmission)**: `0.966`
-    *   **F1-score (Class 1 - Readmission)**: `0.858`
-    *   **Overall Accuracy**: `0.947`
+    *   **AUC Score**: `0.895`
+    *   **Precision (Class 1 - Readmission)**: `0.487`
+    *   **Recall (Class 1 - Readmission)**: `0.603`
+    *   **F1-score (Class 1 - Readmission)**: `0.539`
+    *   **Overall Accuracy**: `0.837`
 
-The tuning process dramatically improved the model's performance, particularly in precision for the positive class, while maintaining high recall.
+The Tuned RF improves overall calibration and efficiency (higher accuracy and precision), but misses 40% of true readmissions, which could mean missed opportunities for timely care.
 
 ## 6. Key Findings and Conclusions
 
-*   The tuned Random Forest Classifier demonstrates excellent capability in predicting 30-day readmissions, with an AUC of 0.993 and strong recall (0.966) for the readmission class.
-*   **Feature Importance Analysis** revealed `prior365_total_enc` (total encounters in the past year) as the most influential predictor, indicating that patients with higher recent healthcare utilization are significantly more likely to be readmitted. Other significant features included various procedure and observation categorical counts, and demographic factors like `AGE` and `GENDER`.
-*   The project successfully leveraged a variety of Synthea-generated features to build a robust predictive model. The high recall suggests the model is effective at identifying high-risk patients, which is critical for clinical decision-making.
-*   The improved precision of the tuned Random Forest model (0.771) indicates a significant reduction in false positives compared to the untuned models, making it more reliable for actionable interventions.
+*   Both untuned and tuned Random Forest classifiers achieved higher discriminative power (AUC ≈ 0.90) than the Logistic Regression baseline (AUC = 0.866), demonstrating stronger capability to identify patients at risk of 30-day hospital readmission.
+*   Logistic Regression remained valuable for understanding variable effects through odds ratios but underperformed compared to ensemble models in predictive accuracy and recall.
+*   Hyperparameter tuning introduced a precision–recall trade-off. Untuned Random Forest: High recall (0.936) — captured over 93% of true readmissions, ideal for early intervention -- vs. Tuned Random Forest: Improved precision (0.487) and accuracy (0.837) but reduced recall (0.603) — better suited for resource-efficient deployment. This illustrates the trade-off between maximizing sensitivity and controlling false positives.
+*   **Key predictors driving readmission risk:**
+*    **Prior inpatient encounters**
+*    **Gap since previous discharge**
+*    **Length of stay (LOS)**
+*    **Procedure intensity (especially chemotherapy-related)**
+*    **Patient demographics and prior utilization patterns**
+ 
+*   **Model recommendation**:
+For intervention-focused use cases, deploy the Untuned Random Forest with calibrated probability thresholds to preserve high recall while managing alert volume.
+For efficiency-focused programs, the Tuned Random Forest offers improved precision and accuracy.
 
 ### Next Steps
 
-*   Further exploration of feature interactions and non-linear relationships.
+*   Threshold calibration using precision–recall analysis.
+*   SHAP value integration for transparent, patient-level feature explanations.
+*   External validation on new cohorts to assess generalizability.
+*   Deployment integration with EHR dashboards or clinical workflows.
 
 ## Reference
 *   Jason Walonoski, Mark Kramer, Joseph Nichols, Andre Quina, Chris Moesel, Dylan Hall, Carlton Duffett, Kudakwashe Dube, Thomas Gallagher, Scott McLachlan, Synthea: An approach, method, and software mechanism for generating synthetic patients and the synthetic electronic health care record, Journal of the American Medical Informatics Association, Volume 25, Issue 3, March 2018, Pages 230–238, https://doi.org/10.1093/jamia/ocx079
